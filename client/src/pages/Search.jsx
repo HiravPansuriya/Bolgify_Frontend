@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import api from "../api/axiosConfig";
-// import "./Search.css";
 import "./All.css";
 
 function Search() {

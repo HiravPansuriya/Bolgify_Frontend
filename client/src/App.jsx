@@ -18,15 +18,25 @@ import EditComment from "./pages/EditComment";
 function App() {
 
     const [user, setUser] = useState(null);
+    const [loadingUser, setLoadingUser] = useState(true);
 
     useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (storedUser) setUser(storedUser);
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            setUser(null);
+        }
+        setLoadingUser(false);
     }, []);
+
+    if (loadingUser) {
+        return <div className="text-center py-5">Loading...</div>;
+    }
 
     return (
         <>
-            <Navbar user={user} setUser={setUser}/>
+            <Navbar user={user} setUser={setUser} />
             <ToastContainer />
             <div className="container mt-4">
                 <Routes>

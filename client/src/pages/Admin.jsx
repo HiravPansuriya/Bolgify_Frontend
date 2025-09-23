@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
-// import "./Admin.css";
 import "./All.css";
 
 function Admin() {
@@ -137,7 +136,7 @@ function Admin() {
                             </div>
                             <button
                                 onClick={() => deleteComment(c._id)}
-                                className="btn btn-sm btn-danger mt-2"
+                                className="btn btn-sm btnD-danger mt-2"
                             >
                                 Delete
                             </button>

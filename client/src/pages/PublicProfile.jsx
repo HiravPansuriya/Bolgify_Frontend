@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import api from "../api/axiosConfig";
-// import "./PublicProfile.css";
 import "./All.css";
 
 function PublicProfile() {
@@ -19,6 +20,7 @@ function PublicProfile() {
                 setBlogs(res.data.blogs || []);
             } catch (err) {
                 console.error("Error fetching profile:", err);
+                toast.error("❌ Failed to load profile.", { position: "top-right", autoClose: 3000 });
                 setError("Failed to load profile.");
             } finally {
                 setLoading(false);

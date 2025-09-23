@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from "../api/axiosConfig";
-// import "./Profile.css";
 import "./All.css";
 
 function Profile({ setUser }) {
@@ -32,6 +31,7 @@ function Profile({ setUser }) {
                 setLikedBlogs(likedBlogs || []);
             } catch (err) {
                 console.error("Error fetching profile:", err);
+                toast.error("❌ Failed to load profile.", { position: "top-right", autoClose: 3000 });
                 setError("Failed to load profile.");
             } finally {
                 setLoading(false);

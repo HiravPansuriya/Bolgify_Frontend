@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import "./AddBlog.css";
 import "./All.css";
 
 function AddBlog() {

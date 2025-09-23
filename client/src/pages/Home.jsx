@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
-// import "./Home.css";
 import "./All.css";
 
 function Home({ user }) {
@@ -57,7 +56,7 @@ function Home({ user }) {
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [user, loading]);
 
     // Helper to attach refs dynamically
     const addToRefs = (el) => {

@@ -1,3 +1,5 @@
+/* @import "tailwindcss"; */
+
 /* !___________________________________________________________________________________ */
 /* ! AddBlog */
 
@@ -98,6 +100,7 @@ body {
     border-color: #66d9ff;
     transition: all 0.3s ease;
     background: #001f3f;
+    padding: 5px 20px;
 }
 
 .btnV-primary:hover {
@@ -111,6 +114,7 @@ body {
     border-color: #ff0800;
     background: #001f3f;
     transition: all 0.3s ease;
+    padding: 5px 20px;
 }
 
 .btnD-danger:hover {
@@ -221,6 +225,7 @@ textarea:focus {
     border-color: #ffa600;
     transition: all 0.3s ease;
     background: #0a1a30;
+    padding: 5px 20px;
 }
 
 .btnD-warning:hover {
@@ -234,6 +239,7 @@ textarea:focus {
     border-color: #ffa600;
     transition: all 0.3s ease;
     background: #0d1117;
+    padding: 5px 20px;
 }
 
 .btnDD-warning:hover {
@@ -247,12 +253,17 @@ textarea:focus {
     border-color: #ff0800;
     transition: all 0.3s ease;
     background: #0a1a30;
+    padding: 5px 20px;
 }
 
 .btnD-dangerDD:hover {
     background-color: #da1e17;
     border-color: #da1e17;
     color: white;
+}
+
+.btnD-dangerD {
+    padding: 5px 20px;
 }
 
 .comments-heading {

@@ -26,14 +26,16 @@ const Navbar = ({ user, setUser }) => {
         try {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            setUser(null); 
+            setUser(null);
+            navigate("/");
             toast.success("🎉 Logged out successfully!", {
                 position: "top-right",
                 autoClose: 3000,
             });
-            
-            navigate("/");
-            await api.post("/user/logout"); 
+
+            api.post("/user/logout").catch(err => {
+                console.error("Backend logout failed:", err.response?.data || err.message);
+            });
         }
         catch (err) {
             console.error("Logout failed:", err.response?.data || err.message);
