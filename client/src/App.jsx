@@ -14,6 +14,7 @@ import AddBlog from "./pages/AddBlog";
 import Blog from "./pages/Blog";
 import EditBlog from "./pages/EditBlog";
 import EditComment from "./pages/EditComment";
+import NotFound from "./pages/NotFound";
 
 function App() {
 
@@ -52,6 +53,7 @@ function App() {
                     <Route path="/blog/:id" element={<Blog user={user} />} />
                     <Route path="/blog/edit/:id" element={<EditBlog />} />
                     <Route path="/blog/comment/edit/:id" element={<EditComment />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </div>
         </>

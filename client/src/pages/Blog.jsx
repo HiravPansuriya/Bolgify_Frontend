@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { toast } from "react-toastify";
+import { generateAvatar } from "../utils/generateAvatar";
 import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
@@ -14,6 +15,10 @@ function Blog({ user }) {
     const [commentContent, setCommentContent] = useState("");
     const [loading, setLoading] = useState(true);
     const [likeLoading, setLikeLoading] = useState(false);
+
+    const [showLikesModal, setShowLikesModal] = useState(false);
+    const [likedUsers, setLikedUsers] = useState([]);
+    const [likesLoading, setLikesLoading] = useState(false);
 
     // Fetch blog and comments
     useEffect(() => {
@@ -65,6 +70,25 @@ function Blog({ user }) {
             toast.error("❌ Failed to like/unlike blog.", { position: "top-right", autoClose: 3000 });
         } finally {
             setLikeLoading(false);
+        }
+    };
+
+    // Fetch users who liked the blog (only blog owner can see)
+    const handleViewLikes = async () => {
+        setLikesLoading(true);
+        try {
+            const res = await api.get(`/blog/${id}/likes`);
+            setLikedUsers(res.data.likes);
+            setShowLikesModal(true);
+        } catch (err) {
+            console.error(err);
+            if (err.response?.status === 403) {
+                toast.error("❌ You are not authorized to view this list.", { position: "top-right", autoClose: 3000 });
+            } else {
+                toast.error("❌ Failed to fetch likes.", { position: "top-right", autoClose: 3000 });
+            }
+        } finally {
+            setLikesLoading(false);
         }
     };
 
@@ -193,7 +217,7 @@ function Blog({ user }) {
             <article className="Blog-card">
                 <div className="blog-header">
                     <img
-                        src={blog.createdBy?.profileImageURL || "/images/default.png"}
+                        src={blog.createdBy?.profileImageURL && blog.createdBy?.profileImageURL !== "/images/default.png" ? blog.createdBy?.profileImageURL : generateAvatar(blog.createdBy?.fullName, 50)}
                         alt="Author"
                         className="author-img"
                     />
@@ -248,7 +272,57 @@ function Blog({ user }) {
                     <i className={blog.likedByUser ? "fa-solid fa-heart" : "fa-regular fa-heart"}></i>
                     <span className="like-count">{blog.likesCount}</span>
                 </button>
+
+                {user && blog.createdBy?._id === user._id && (
+                    <button
+                        onClick={handleViewLikes}
+                        className="btn btnL-primary btn-sm ms-3"
+                        disabled={likesLoading}
+                    >
+                        {likesLoading ? "Loading..." : "View Likes"}
+                    </button>
+                )}
             </div>
+
+            {/* Likes Modal */}
+            {showLikesModal && (
+                <div className="likes-modal-overlay">
+                    <div className="likes-modal">
+                        <a
+                            onClick={() => setShowLikesModal(false)}
+                            className="likes-modal-close"
+                        >
+                            ✕
+                        </a>
+                        <h2>Likes</h2>
+
+                        {likedUsers.length === 0 ? (
+                            <p className="likes-modal-empty">No likes yet.</p>
+                        ) : (
+                            <ul className="likes-modal-list">
+                                {likedUsers.map((u) => (
+                                    <li key={u._id} className="likes-modal-item">
+                                        <img
+                                            src={
+                                                u.profileImageURL && u.profileImageURL !== "/images/default.png"
+                                                    ? u.profileImageURL
+                                                    : generateAvatar(u.fullName, 40)
+                                            }
+                                            alt={u.username}
+                                        />
+                                        <Link
+                                            to={`/user/public/${u.fullName}`}
+                                            onClick={() => setShowLikesModal(false)}
+                                        >
+                                            {u.fullName}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* Comments Section */}
             <section className="comments-section">
@@ -277,7 +351,7 @@ function Blog({ user }) {
                             <div className="comment-card" key={c._id}>
                                 <div className="comment-header">
                                     <img
-                                        src={c.createdBy?.profileImageURL || "/images/default.png"}
+                                        src={c.createdBy?.profileImageURL && c.createdBy?.profileImageURL !== "/images/default.png" ? c.createdBy?.profileImageURL : generateAvatar(c.createdBy?.fullName, 35)}
                                         alt="User"
                                         className="comment-user-img"
                                     />

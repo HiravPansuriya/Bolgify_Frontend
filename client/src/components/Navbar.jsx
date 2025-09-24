@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../api/axiosConfig";
+import { generateAvatar } from "../utils/generateAvatar";
 import "./Navbar.css";
 
 const Navbar = ({ user, setUser }) => {
@@ -137,7 +138,11 @@ const Navbar = ({ user, setUser }) => {
                                         aria-expanded="false"
                                     >
                                         <img
-                                            src={user.profileImageURL || "/images/default.png"}
+                                            src={
+                                                user.profileImageURL && user.profileImageURL !== "/images/default.png"
+                                                    ? user.profileImageURL
+                                                    : generateAvatar(user.fullName, 35)
+                                            }
                                             width="35"
                                             height="35"
                                             className="rounded-circle border border-white"

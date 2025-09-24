@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
 const Signup = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
@@ -12,8 +14,6 @@ const Signup = () => {
     });
 
     const [loading, setLoading] = useState(false); // ✅ Loading state
-    const [error, setError] = useState(null);      // ✅ Error state
-    const [success, setSuccess] = useState(null);  // ✅ Success message
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -24,12 +24,13 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
-        setSuccess(null);
 
         try {
             const res = await api.post("user/signup", formData);
-            setSuccess("Signup successful! Please verify your email.");
+            toast.success("🎉 Signup successfully! Please verify your email.", {
+                position: "top-right",
+                autoClose: 3000,
+            });
             console.log("Signup Success:", res.data);
             navigate("/verify-otp", {
                 state: { email: formData.email }, // pass email to VerifyOTP.jsx
@@ -39,7 +40,10 @@ const Signup = () => {
         }
         catch (err) {
             console.error("Signup Error:", err.response?.data || err.message);
-            setError(err.response?.data?.error || "Signup failed! Try again.");
+            toast.error(err.response?.data?.error || "Signup failed! Please try again.", {
+                position: "top-right",
+                autoClose: 3000,
+            });
         }
         finally {
             setLoading(false);
@@ -99,11 +103,7 @@ const Signup = () => {
                         required
                     />
                     <div className="form-text">Password must contain at least 6 characters.</div>
-                </div>      
-
-                {/* Error / Success Messages */}
-                {error && <div className="alert alert-danger">{error}</div>}
-                {success && <div className="alert alert-success">{success}</div>}
+                </div>
 
                 {/* Submit Button */}
                 <button

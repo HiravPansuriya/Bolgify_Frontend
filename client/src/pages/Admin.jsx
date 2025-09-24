@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
+import { toast } from "react-toastify";
+import { User, FileText, MessageCircle, Trash2, Eye } from "lucide-react";
 import "./All.css";
 
 function Admin() {
@@ -26,31 +28,95 @@ function Admin() {
     };
 
     const deleteBlog = async (blogId) => {
-        if (!window.confirm("Delete this blog?")) return;
-        try {
-            await api.delete(`/blog/${blogId}`);
-            setData((prev) => ({
-                ...prev,
-                blogs: prev.blogs.filter((b) => b._id !== blogId),
-            }));
-        } catch (err) {
-            console.error("Error deleting blog:", err.response?.data || err.message);
-            alert("Failed to delete blog. Please try again.");
-        }
+        toast.info(
+            <div>
+                <strong>Are you sure you want to delete this blog?</strong>
+                <div className="mt-2">
+                    <button
+                        onClick={async () => {
+                            try {
+                                await api.delete(`/blog/${blogId}`);
+                                setData((prev) => ({
+                                    ...prev,
+                                    blogs: prev.blogs.filter((b) => b._id !== blogId),
+                                    comments: prev.comments.filter((c) => c.blogId?._id !== blogId),
+                                }));
+                                toast.dismiss();
+                                toast.success("🗑️ Blog deleted successfully!", {
+                                    position: "top-right",
+                                    autoClose: 3000,
+                                });
+                            } catch (err) {
+                                console.error(err);
+                                toast.dismiss();
+                                toast.error("❌ Failed to delete blog.", { autoClose: 3000 });
+                            }
+                        }}
+                        className="btn btn-sm btnD-dangerD me-2"
+                    >
+                        Yes, Delete
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss()}
+                        className="btn btn-sm btnD-secondary"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>,
+            {
+                position: "top-center",
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+            }
+        );
     };
 
+    // Delete Comment with toast confirmation
     const deleteComment = async (commentId) => {
-        if (!window.confirm("Delete this comment?")) return;
-        try {
-            await api.delete(`/blog/comment/${commentId}`);
-            setData((prev) => ({
-                ...prev,
-                comments: prev.comments.filter((c) => c._id !== commentId),
-            }));
-        } catch (err) {
-            console.error("Error deleting comment:", err.response?.data || err.message);
-            alert("Failed to delete comment. Please try again.");
-        }
+        toast.info(
+            <div>
+                <strong>Are you sure you want to delete this comment?</strong>
+                <div className="mt-2">
+                    <button
+                        onClick={async () => {
+                            try {
+                                await api.delete(`/blog/comment/${commentId}`);
+                                setData((prev) => ({
+                                    ...prev,
+                                    comments: prev.comments.filter((c) => c._id !== commentId),
+                                }));
+                                toast.dismiss();
+                                toast.success("🗑️ Comment deleted successfully!", {
+                                    position: "top-right",
+                                    autoClose: 3000,
+                                });
+                            } catch (err) {
+                                console.error(err);
+                                toast.dismiss();
+                                toast.error("❌ Failed to delete comment.", { autoClose: 3000 });
+                            }
+                        }}
+                        className="btn btn-sm btnD-dangerD me-2"
+                    >
+                        Yes, Delete
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss()}
+                        className="btn btn-sm btnD-secondary"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>,
+            {
+                position: "top-center",
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+            }
+        );
     };
 
     useEffect(() => {
@@ -74,75 +140,71 @@ function Admin() {
     }
 
     return (
-        <div className="admin-container container mt-5 mb-5">
-            <h2 className="mb-4">Admin Dashboard</h2>
+        <div className="admin-container">
+            <h2 className="admin-title">Admin Dashboard</h2>
 
             {/* Users Section */}
-            <section className="mb-5">
-                <h4>All Users ({data.users.length})</h4>
-                <ul className="list-group">
+            <section className="admin-section">
+                <h4>
+                    <User size={20} className="icon" /> Users ({data.users.length})
+                </h4>
+                <div className="card-list">
                     {data.users.map((u) => (
-                        <li key={u._id} className="list-group-item d-flex justify-content-between">
-                            <span>
-                                {u.fullName} ({u.email}) - {u.role}
-                            </span>
-                        </li>
+                        <div key={u._id} className="Card">
+                            <p className="name">
+                                <strong>{u.fullName}</strong>
+                            </p>
+                            <p className="email">
+                                {u.email}
+                            </p>
+                            <span className={`role ${u.role.toLowerCase()}`}>{u.role}</span>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </section>
 
             {/* Blogs Section */}
-            <section className="mb-5">
-                <h4>All Blogs ({data.blogs.length})</h4>
-                <ul className="list-group">
+            <section className="admin-section">
+                <h4>
+                    <FileText size={20} className="icon" /> Blogs ({data.blogs.length})
+                </h4>
+                <div className="card-list">
                     {data.blogs.map((b) => (
-                        <li
-                            key={b._id}
-                            className="list-group-item d-flex justify-content-between align-items-center"
-                        >
-                            <div>
-                                <strong>{b.title}</strong> by {b.createdBy?.fullName || "Unknown"}
-                            </div>
-                            <div>
-                                <Link to={`/blog/${b._id}`} className="btn btn-sm btnV-primary me-2">
-                                    View
+                        <div key={b._id} className="Card blog-card">
+                            <p>
+                                <strong>{b.title}</strong> by <span>{b.createdBy?.fullName || "Unknown"}</span>
+                            </p>
+                            <div className="card-actions">
+                                <Link to={`/blog/${b._id}`} className="btn btnA view-btn">
+                                    <Eye size={16} /> View
                                 </Link>
-                                <button
-                                    onClick={() => deleteBlog(b._id)}
-                                    className="btn btn-sm btnD-danger"
-                                >
-                                    Delete
+                                <button onClick={() => deleteBlog(b._id)} className="btn btnA delete-btn">
+                                    <Trash2 size={16} /> Delete
                                 </button>
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </section>
 
             {/* Comments Section */}
-            <section>
-                <h4>All Comments</h4>
-                <ul className="list-group">
+            <section className="admin-section">
+                <h4>
+                    <MessageCircle size={20} className="icon" /> Comments ({data.comments.length})
+                </h4>
+                <div className="card-list">
                     {data.comments.map((c) => (
-                        <li
-                            key={c._id}
-                            className="list-group-item d-flex justify-content-between align-items-start"
-                        >
-                            <div>
-                                <strong>{c.createdBy?.fullName || "Unknown"}</strong> on blog: "
-                                {c.blogId?.title || "Untitled"}":
-                                <br />
-                                {c.content}
-                            </div>
-                            <button
-                                onClick={() => deleteComment(c._id)}
-                                className="btn btn-sm btnD-danger mt-2"
-                            >
-                                Delete
+                        <div key={c._id} className="Card comment-Card">
+                            <p>
+                                <strong>{c.createdBy?.fullName || "Unknown"}</strong> on <span>{c.blogId?.title || "Untitled"}</span> :
+                            </p>
+                            <p className="comment-content">{c.content}</p>
+                            <button onClick={() => deleteComment(c._id)} className="btn btnA delete-btn">
+                                <Trash2 size={16} /> Delete
                             </button>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </section>
         </div>
     );

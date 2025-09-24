@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { generateAvatar } from "../utils/generateAvatar";
 import api from "../api/axiosConfig";
 import "./All.css";
 
@@ -208,7 +209,11 @@ function Profile({ setUser }) {
             <form className="profile-form" onSubmit={handleUpdateProfile}>
                 <div className="mb-3 d-flex flex-column">
                     <img
-                        src={profileUser.profileImageURL || "/images/default.png"}
+                        src={
+                            profileUser.profileImageURL && profileUser.profileImageURL !== "/images/default.png"
+                                ? profileUser.profileImageURL
+                                : generateAvatar(profileUser.fullName, 35)
+                        }
                         alt="Profile"
                         className="rounded-circle profile-avatar"
                     />

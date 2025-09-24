@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { generateAvatar } from "../utils/generateAvatar";
 import api from "../api/axiosConfig";
 import "./All.css";
 
@@ -36,7 +37,11 @@ function PublicProfile() {
         <div className="public-profile-container container mt-5">
             <div className="text-center">
                 <img
-                    src={profileUser.profileImageURL || "/images/default.png"}
+                    src={
+                        profileUser.profileImageURL && profileUser.profileImageURL !== "/images/default.png"
+                            ? profileUser.profileImageURL
+                            : generateAvatar(profileUser.fullName, 35)
+                    }
                     alt="Profile"
                     className="rounded-circle profile-avatar"
                     width={100}
