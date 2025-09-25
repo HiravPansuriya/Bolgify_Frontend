@@ -33,7 +33,11 @@ const Signup = () => {
             });
             console.log("Signup Success:", res.data);
             navigate("/verify-otp", {
-                state: { email: formData.email }, // pass email to VerifyOTP.jsx
+                state: { 
+                        email: formData.email,
+                        fullName: formData.fullName,
+                        password: formData.password,
+                }, // pass email to VerifyOTP.jsx
             });
             setFormData({ fullName: "", email: "", password: "" });
 

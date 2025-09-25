@@ -7,13 +7,15 @@ import "./All.css";
 
 function VerifyOTP() {
     const [otp, setOtp] = useState("");
-    const [timeLeft, setTimeLeft] = useState(60);
+    const [timeLeft, setTimeLeft] = useState(120);
     const [resendEnabled, setResendEnabled] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
     const email = location.state?.email;
+    const fullName = location.state?.fullName;
+    const password = location.state?.password;
 
     useEffect(() => {
         if (!email) {
@@ -29,7 +31,7 @@ function VerifyOTP() {
                     setResendEnabled(true);
                     return 0;
                 }
-                if (prev === 31) {
+                if (prev === 91) {
                     setResendEnabled(true);
                 }
                 return prev - 1;
@@ -83,7 +85,11 @@ function VerifyOTP() {
         if (!resendEnabled) return;
 
         try {
-            const res = await api.post("/user/resend-otp", { email });
+            const res = await api.post("/user/resend-otp", { 
+                email,
+                fullName,
+                password 
+            });
             setMessage({ type: "success", text: res.data.message || "OTP Resent Successfully!" });
             toast.info(res.data.message || "📩 OTP Resent Successfully!", {
                 position: "top-right",
@@ -91,7 +97,7 @@ function VerifyOTP() {
             });
 
             // Restart timer
-            setTimeLeft(60);
+            setTimeLeft(120);
             setResendEnabled(false);
         }
         catch (err) {
