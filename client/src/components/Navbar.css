@@ -73,7 +73,7 @@ body.scrolled .navbar-blue {
 .navbar-blue .dropdown-menu .dropdown-divider {
     border-top: 1px solid #66d9ff;
     opacity: 0.7;
-    margin: 6px 0;
+    margin: 5px 0;
 }
 
 .searchS {
@@ -126,4 +126,61 @@ form[role="search"] input:focus {
     .searchS .btn {
         width: 100px;
     }
+}
+
+.notification-bell i {
+    color: #FFD700;
+    transition: color 0.3s ease;
+    margin-right: 25px;
+}
+
+.notification-bell i:hover {
+    color: #FFD700;
+    transition: color 0.3s ease;
+}
+
+.number {
+    margin-left: -20px;
+    position: absolute;
+}
+
+.notification-item.unread {
+    background-color: #00366c;
+    font-weight: 500;
+}
+
+.notification-item {
+    background-color: #001f3f;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+.notification-item:hover {
+    background-color: #001931; 
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #f1f1f1;
+}
+
+.notification-content strong {
+    color: #ffd700; 
+}
+
+.notification-content .text-muted {
+    font-size: 0.75rem;
+    color: #b0b0b0;
+}
+
+.notification-item img {
+    border: 2px solid #ffd700;
 }

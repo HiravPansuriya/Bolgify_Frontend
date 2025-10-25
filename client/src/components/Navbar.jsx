@@ -5,12 +5,14 @@ import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../api/axiosConfig";
 import { generateAvatar } from "../utils/generateAvatar";
+import { useNotifications } from "../context/NotificationContext";
 import "./Navbar.css";
 
 const Navbar = ({ user, setUser }) => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const { notifications, unreadCount, markAsRead } = useNotifications();
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -128,8 +130,74 @@ const Navbar = ({ user, setUser }) => {
                                     </button>
                                 </form>
 
+                                {user && (
+                                    <li className="nav-item dropdown ms-lg-auto position-relative">
+                                        <a
+                                            className="nav-link notification-bell position-relative"
+                                            href="#"
+                                            role="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            <i className="bi bi-bell-fill fs-4"></i>
+                                            {unreadCount > 0 && (
+                                                <span
+                                                    className="number translate-middle badge rounded-pill bg-danger"
+                                                >
+                                                    {unreadCount}
+                                                </span>
+                                            )}
+                                        </a>
+                                        <ul className="dropdown-menu dropdown-menu-end shadow notification-dropdown p-0"
+                                            style={{ minWidth: "350px", maxHeight: "400px", overflowY: "auto" }}
+                                        >
+                                            {notifications.length === 0 ? (
+                                                <li className="dropdown-item text-center">
+                                                    No notifications
+                                                </li>
+                                            ) : (
+                                                notifications.map((n) => (
+                                                    <li
+                                                        key={n._id}
+                                                        className={`d-flex align-items-start gap-2 notification-item ${!n.isRead ? "unread" : ""}`}
+                                                        onClick={() => !n.isRead && markAsRead(n._id)}
+                                                        style={{ cursor: "pointer" }}
+                                                    >
+                                                        <div className="d-flex align-items-center gap-2">
+                                                            <img
+                                                                src={n.fromUser?.profileImageURL || "/images/default.png"}
+                                                                width="30"
+                                                                height="30"
+                                                                className="rounded-circle"
+                                                                alt="user"
+                                                            />
+                                                            <div className="notification-content">
+                                                                {n.type === "like" && (
+                                                                    <span>
+                                                                        <strong>{n.fromUser?.fullName}</strong> liked your blog{" "}
+                                                                        <strong>{n.blog?.title}</strong>
+                                                                    </span>
+                                                                )}
+                                                                {n.type === "comment" && (
+                                                                    <span>
+                                                                        <strong>{n.fromUser?.fullName}</strong> commented on{" "}
+                                                                        <strong>{n.blog?.title}</strong>
+                                                                    </span>
+                                                                )}
+                                                                <div className="text-muted small">
+                                                                    {new Date(n.createdAt).toLocaleString()}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                ))
+                                            )}
+                                        </ul>
+                                    </li>
+                                )}
+
                                 {/* User Dropdown */}
-                                <li className="nav-item dropdown ms-lg-auto">
+                                <li className="nav-item dropdown ">
                                     <a
                                         className="nav-link dropdown-toggle d-flex align-items-center gap-2"
                                         href="#"
