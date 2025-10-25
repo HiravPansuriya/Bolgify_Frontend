@@ -20,6 +20,9 @@ function Blog({ user }) {
     const [likedUsers, setLikedUsers] = useState([]);
     const [likesLoading, setLikesLoading] = useState(false);
 
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [savedByUser, setSavedByUser] = useState(false);
+
     // Fetch blog and comments
     useEffect(() => {
         const fetchBlog = async () => {
@@ -31,12 +34,20 @@ function Blog({ user }) {
                 const likedByUser =
                     user && blogData.likes.some((uid) => uid.toString() === user._id.toString());
 
+                let isSaved = false;
+                if (user) {
+                    const savedRes = await api.get("/user/saved");
+                    const savedBlogs = savedRes.data.savedBlogs || [];
+                    isSaved = savedBlogs.some((b) => b._id === blogData._id);
+                }
+
                 setBlog({
                     ...blogData,
                     likedByUser: likedByUser,
                     likesCount: blogData.likes.length,
                 });
 
+                setSavedByUser(isSaved);
                 setComments(res.data.comments || []);
             } catch (err) {
                 console.error(err);
@@ -91,6 +102,45 @@ function Blog({ user }) {
             setLikesLoading(false);
         }
     };
+
+    const handleSave = async () => {
+        if (!user) {
+            toast.error("❌ You must be logged in to save a blog.", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        setSaveLoading(true);
+        try {
+            const res = await api.post(`/user/save/${id}`);
+            const message = res.data.message;
+
+            if (message.includes("unsaved")) {
+                setSavedByUser(false);
+                // toast.info("💾 Blog removed from saved list.", {
+                //     position: "top-right",
+                //     autoClose: 3000,
+                // });
+            } else {
+                setSavedByUser(true);
+                // toast.success("💾 Blog saved successfully!", {
+                //     position: "top-right",
+                //     autoClose: 3000,
+                // });
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("❌ Failed to save blog.", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+        } finally {
+            setSaveLoading(false);
+        }
+    };
+
 
     // Submit new comment
     const handleCommentSubmit = async (e) => {
@@ -272,6 +322,7 @@ function Blog({ user }) {
                     <i className={blog.likedByUser ? "fa-solid fa-heart" : "fa-regular fa-heart"}></i>
                     <span className="like-count">{blog.likesCount}</span>
                 </button>
+                Likes
 
                 {user && blog.createdBy?._id === user._id && (
                     <button
@@ -282,6 +333,16 @@ function Blog({ user }) {
                         {likesLoading ? "Loading..." : "View Likes"}
                     </button>
                 )}
+
+                {/* Save button */}
+                <button
+                    className={`save-btn ${savedByUser ? "saved" : ""}`}
+                    onClick={handleSave}
+                    disabled={saveLoading}
+                >
+                    <i className={savedByUser ? "fa-solid fa-bookmark" : "fa-regular fa-bookmark"}></i>
+                </button>
+                <span className="ms-1">{savedByUser ? "Unsave" : "Save"}</span>
             </div>
 
             {/* Likes Modal */}

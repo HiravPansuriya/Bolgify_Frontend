@@ -13,6 +13,7 @@ function Profile({ setUser }) {
     const [profileUser, setProfileUser] = useState(null);
     const [blogs, setBlogs] = useState([]);
     const [likedBlogs, setLikedBlogs] = useState([]);
+    const [savedBlogs, setSavedBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const [fullName, setFullName] = useState("");
@@ -24,12 +25,13 @@ function Profile({ setUser }) {
         const fetchProfileData = async () => {
             try {
                 const res = await api.get(`/user/profile/${id}`);
-                const { user, blogs, likedBlogs } = res.data;
+                const { user, blogs, likedBlogs, savedBlogs } = res.data;
 
                 setProfileUser(user);
                 setFullName(user.fullName);
                 setBlogs(blogs || []);
                 setLikedBlogs(likedBlogs || []);
+                setSavedBlogs(savedBlogs || []);
             } catch (err) {
                 console.error("Error fetching profile:", err);
                 toast.error("❌ Failed to load profile.", { position: "top-right", autoClose: 3000 });
@@ -271,16 +273,19 @@ function Profile({ setUser }) {
 
             {/* User Blogs */}
             <h4 className="mt-5 mb-3">📝 Your Blogs</h4>
-            <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 g-4 mb-5">
+            {blogs.length === 0 ?
+            (<p>You haven’t created any blogs yet.</p>) : (
+
+                <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 g-4 mb-5">
                 {blogs.map((blog) => (
                     <div className="col" key={blog._id}>
                         <div className="card h-100 shadow-sm border-0">
                             {blog.coverImageURL && (
                                 <img
-                                    src={blog.coverImageURL}
-                                    className="card-img-top"
-                                    alt="Blog Cover"
-                                    style={{ height: "180px", objectFit: "cover" }}
+                                src={blog.coverImageURL}
+                                className="card-img-top"
+                                alt="Blog Cover"
+                                style={{ height: "180px", objectFit: "cover" }}
                                 />
                             )}
                             <div className="card-body">
@@ -296,6 +301,7 @@ function Profile({ setUser }) {
                     </div>
                 ))}
             </div>
+            )}
 
             <hr className="my-4" />
 
@@ -330,6 +336,41 @@ function Profile({ setUser }) {
                     ))}
                 </div>
             )}
+
+            <hr className="my-4" />
+
+            {/* Saved Blogs */}
+            <h4 className="mt-5 mb-3">📌 Saved Blogs</h4>
+            {savedBlogs.length === 0 ? (
+                <p>You haven’t saved any blogs yet.</p>
+            ) : (
+                <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 g-4 mb-5">
+                    {savedBlogs.map((blog) => (
+                        <div className="col" key={blog._id}>
+                            <div className="card h-100 shadow-sm border-0">
+                                {blog.coverImageURL && (
+                                    <img
+                                        src={blog.coverImageURL}
+                                        className="card-img-top"
+                                        alt="Blog Cover"
+                                        style={{ height: "180px", objectFit: "cover" }}
+                                    />
+                                )}
+                                <div className="card-body">
+                                    <h5 className="card-title">{blog.title}</h5>
+                                    <Link to={`/blog/${blog._id}`} className="btn btn-sm btn-outline-primary">
+                                        View Blog
+                                    </Link>
+                                </div>
+                                <div className="card-footer small">
+                                    {new Date(blog.createdAt).toLocaleDateString()}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
 
             <hr className="my-4" />
 

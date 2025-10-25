@@ -456,6 +456,10 @@ body {
     color: #e0245e;
 }
 
+.like-btn:hover{
+    color: #e0245e;
+}
+
 .like-count {
     font-size: 1rem;
     color: white;
@@ -477,6 +481,25 @@ body {
 
 .like-btn.liked {
     animation: pop 0.3s ease;
+}
+
+.save-btn {
+    background: transparent;
+    border: none;
+    color: #ddd;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin-top: 2px;
+    margin-left: 1rem;
+}
+
+.save-btn.saved {
+    color: rgb(0, 153, 255);
+}
+
+.save-btn:hover {
+    color: rgb(0, 153, 255);
 }
 
 /* !___________________________________________________________________________________ */
