@@ -53,7 +53,7 @@ function PublicProfile() {
             <hr />
 
             <h4 className="mt-4">📝 Blogs by {profileUser.fullName}</h4>
-            <div className="row row-cols-1 row-cols-md-3 g-4 mb-5 mt-2">
+            <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
                 {blogs.length > 0 ? (
                     blogs.map((blog) => (
                         <div className="col" key={blog._id}>

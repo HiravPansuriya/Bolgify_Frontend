@@ -12,7 +12,7 @@ const Navbar = ({ user, setUser }) => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const { notifications, unreadCount, markAsRead } = useNotifications();
+    const { notifications, unreadCount, markAsRead, setNotifications } = useNotifications();
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -47,6 +47,11 @@ const Navbar = ({ user, setUser }) => {
                 autoClose: 3000,
             });
         }
+    };
+
+    const handleMarkAsRead = async (id) => {
+        await markAsRead(id);
+        setNotifications(prev => prev.filter(n => n._id !== id)); // instantly remove from UI
     };
 
     return (
@@ -160,7 +165,7 @@ const Navbar = ({ user, setUser }) => {
                                                     <li
                                                         key={n._id}
                                                         className={`d-flex align-items-start gap-2 notification-item ${!n.isRead ? "unread" : ""}`}
-                                                        onClick={() => !n.isRead && markAsRead(n._id)}
+                                                        onClick={() => handleMarkAsRead(n._id)}
                                                         style={{ cursor: "pointer" }}
                                                     >
                                                         <div className="d-flex align-items-center gap-2">

@@ -6,12 +6,25 @@ const NotificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
+
+    // ✅ Keep user in sync when login/logout happens
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const updatedUser = JSON.parse(localStorage.getItem("user"));
+            setUser(updatedUser);
+        };
+        window.addEventListener("storage", handleStorageChange);
+        return () => window.removeEventListener("storage", handleStorageChange);
+    }, []);
 
     const loadNotifications = async () => {
+        if (!user) return; // ✅ wait until user is available
         try {
             const { data } = await fetchNotifications();
-            setNotifications(data.notifications);
-            setUnreadCount(data.notifications.filter(n => !n.isRead).length);
+            const unread = data.notifications.filter(n => !n.isRead);
+            setNotifications(unread); // ✅ only show unread notifications
+            setUnreadCount(unread.length);
         } catch (err) {
             console.error("Failed to fetch notifications:", err);
         }
@@ -20,24 +33,27 @@ export const NotificationProvider = ({ children }) => {
     const markAsRead = async (id) => {
         try {
             await markNotificationAsRead(id);
-            setNotifications(prev => 
-                prev.map(n => n._id === id ? { ...n, isRead: true } : n)
-            );
-            setUnreadCount(prev => prev - 1);
+            setNotifications(prev => prev.filter(n => n._id !== id)); // ✅ remove read ones
+            setUnreadCount(prev => Math.max(prev - 1, 0));
         } catch (err) {
             console.error("Failed to mark notification read:", err);
         }
     };
 
+    // ✅ Refetch when user logs in or page refreshes
     useEffect(() => {
-        loadNotifications();
-    }, []);
+        if (user) loadNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     return (
-        <NotificationContext.Provider value={{ notifications, unreadCount, markAsRead, loadNotifications }}>
+        <NotificationContext.Provider
+            value={{ notifications, unreadCount, markAsRead, loadNotifications }}
+        >
             {children}
         </NotificationContext.Provider>
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useNotifications = () => useContext(NotificationContext);
