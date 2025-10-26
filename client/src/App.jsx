@@ -18,22 +18,29 @@ import NotFound from "./pages/NotFound";
 import { NotificationProvider } from "./context/NotificationContext";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function App() {
-
+function App() 
+{
     const [user, setUser] = useState(null);
     const [loadingUser, setLoadingUser] = useState(true);
 
     useEffect(() => {
+
         const storedUser = localStorage.getItem("user");
-        if (storedUser) {
+
+        if(storedUser) 
+        {
             setUser(JSON.parse(storedUser));
-        } else {
+        } 
+        else 
+        {
             setUser(null);
         }
         setLoadingUser(false);
+
     }, []);
 
-    if (loadingUser) {
+    if(loadingUser) 
+    {
         return <div className="text-center py-5">Loading...</div>;
     }
 

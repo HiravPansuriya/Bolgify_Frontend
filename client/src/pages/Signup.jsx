@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
 const Signup = () => {
+
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         fullName: "",
@@ -13,19 +14,19 @@ const Signup = () => {
         password: "",
     });
 
-    const [loading, setLoading] = useState(false); // ✅ Loading state
+    const [loading, setLoading] = useState(false); 
 
-    // Handle form input changes
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Handle form submit
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         setLoading(true);
 
-        try {
+        try 
+        {
             const res = await api.post("user/signup", formData);
             toast.success("🎉 Signup successfully! Please verify your email.", {
                 position: "top-right",
@@ -37,19 +38,20 @@ const Signup = () => {
                         email: formData.email,
                         fullName: formData.fullName,
                         password: formData.password,
-                }, // pass email to VerifyOTP.jsx
+                },
             });
             setFormData({ fullName: "", email: "", password: "" });
-
         }
-        catch (err) {
+        catch(err) 
+        {
             console.error("Signup Error:", err.response?.data || err.message);
             toast.error(err.response?.data?.error || "Signup failed! Please try again.", {
                 position: "top-right",
                 autoClose: 3000,
             });
         }
-        finally {
+        finally 
+        {
             setLoading(false);
         }
     };

@@ -6,7 +6,8 @@ import { generateAvatar } from "../utils/generateAvatar";
 import api from "../api/axiosConfig";
 import "./All.css";
 
-function PublicProfile() {
+function PublicProfile() 
+{
     const { username } = useParams();
     const [profileUser, setProfileUser] = useState(null);
     const [blogs, setBlogs] = useState([]);
@@ -14,20 +15,29 @@ function PublicProfile() {
     const [error, setError] = useState("");
 
     useEffect(() => {
+
         const fetchProfile = async () => {
-            try {
+
+            try 
+            {
                 const res = await api.get(`/user/public/${username}`);
                 setProfileUser(res.data.user);
                 setBlogs(res.data.blogs || []);
-            } catch (err) {
+            } 
+            catch(err) 
+            {
                 console.error("Error fetching profile:", err);
                 toast.error("❌ Failed to load profile.", { position: "top-right", autoClose: 3000 });
                 setError("Failed to load profile.");
-            } finally {
+            } 
+            finally 
+            {
                 setLoading(false);
             }
         };
+        
         fetchProfile();
+
     }, [username]);
 
     if (loading) return <div className="public-profile-loading">Loading...</div>;

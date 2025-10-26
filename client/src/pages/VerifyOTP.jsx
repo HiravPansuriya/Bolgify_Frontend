@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
-function VerifyOTP() {
+function VerifyOTP() 
+{
     const [otp, setOtp] = useState("");
     const [timeLeft, setTimeLeft] = useState(120);
     const [resendEnabled, setResendEnabled] = useState(false);
@@ -18,20 +19,27 @@ function VerifyOTP() {
     const password = location.state?.password;
 
     useEffect(() => {
-        if (!email) {
+
+        if(!email) 
+        {
             navigate("/signup");
         }
     }, [email, navigate]);
 
     useEffect(() => {
+
         const timer = setInterval(() => {
+
             setTimeLeft((prev) => {
-                if (prev <= 1) {
+                
+                if(prev <= 1) 
+                {
                     clearInterval(timer);
                     setResendEnabled(true);
                     return 0;
                 }
-                if (prev === 91) {
+                if(prev === 91) 
+                {
                     setResendEnabled(true);
                 }
                 return prev - 1;
@@ -42,17 +50,20 @@ function VerifyOTP() {
     }, []);
 
     const formatTime = (seconds) => {
+
         const minutes = String(Math.floor(seconds / 60)).padStart(2, "0");
         const secs = String(seconds % 60).padStart(2, "0");
         return `${minutes}:${secs}`;
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         setLoading(true);
         setMessage(null);
 
-        try {
+        try 
+        {
             const res = await api.post("/user/verify-otp", {
                 email,
                 otp,
@@ -63,12 +74,14 @@ function VerifyOTP() {
                 autoClose: 3000,
             });
 
-            if (res.data.token) {
+            if(res.data.token) 
+            {
                 localStorage.setItem("token", res.data.token);
                 navigate("/login");
             }
         }
-        catch (err) {
+        catch(err) 
+        {
             console.error("OTP Verification Error:", err.response?.data || err.message);
             setMessage({ type: "error", text: err.response?.data?.error || "Invalid OTP. Please try again." });
             toast.error(err.response?.data?.error || "❌ Invalid OTP. Please try again.", {
@@ -76,15 +89,18 @@ function VerifyOTP() {
                 autoClose: 3000,
             });
         }
-        finally {
+        finally 
+        {
             setLoading(false);
         }
     };
 
     const handleResend = async () => {
+
         if (!resendEnabled) return;
 
-        try {
+        try 
+        {
             const res = await api.post("/user/resend-otp", { 
                 email,
                 fullName,
@@ -96,11 +112,11 @@ function VerifyOTP() {
                 autoClose: 3000,
             });
 
-            // Restart timer
             setTimeLeft(120);
             setResendEnabled(false);
         }
-        catch (err) {
+        catch(err) 
+        {
             console.error("Resend OTP Error:", err.response?.data || err.message);
             setMessage({ type: "error", text: err.response?.data?.error || "Failed to resend OTP." });
             toast.error(err.response?.data?.error || "❌ Failed to resend OTP.", {

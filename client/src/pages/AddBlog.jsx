@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
-function AddBlog() {
+function AddBlog() 
+{
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [coverImage, setCoverImage] = useState(null);
@@ -14,17 +15,20 @@ function AddBlog() {
 
     const navigate = useNavigate();
 
-    // Handle form submission
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         setError("");
         setLoading(true);
 
-        try {
+        try 
+        {
             const formData = new FormData();
             formData.append("title", title);
             formData.append("body", body);
-            if (coverImage) {
+
+            if(coverImage) 
+            {
                 formData.append("coverImage", coverImage);
             }
 
@@ -32,15 +36,18 @@ function AddBlog() {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
-            if (res.status === 201) {
+            if(res.status === 201) 
+            {
                 toast.success("🎉 Blog added successfully!", {
                     position: "top-right",
                     autoClose: 3000,
                 });
 
-                navigate("/"); // redirect to home
+                navigate("/");
             }
-        } catch (err) {
+        }
+        catch(err) 
+        {
             console.error("Error adding blog:", err.response?.data || err.message);
 
             toast.error(err.response?.data?.message || "❌ Failed to add blog. Please try again.", {
@@ -49,7 +56,9 @@ function AddBlog() {
             });
 
             setError(err.response?.data?.message || "Failed to add blog. Please try again.");
-        } finally {
+        } 
+        finally 
+        {
             setLoading(false);
         }
     };

@@ -5,25 +5,33 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
-function EditComment() {
-    const { id } = useParams(); // comment ID
+function EditComment() 
+{
+    const { id } = useParams();
     const navigate = useNavigate();
 
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
         const fetchComment = async () => {
-            try {
-                const res = await api.get(`/blog/comment/${id}`); // you may need to create this route
+
+            try 
+            {
+                const res = await api.get(`/blog/comment/${id}`);
                 setContent(res.data.comment.content);
-            } catch (err) {
+            } 
+            catch(err) 
+            {
                 console.error("Error fetching comment:", err);
                 toast.error("❌ Failed to fetch comment.", {
-                position: "top-right",
-                autoClose: 3000,
-            });
-            } finally {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            } 
+            finally 
+            {
                 setLoading(false);
             }
         };
@@ -31,16 +39,20 @@ function EditComment() {
     }, [id]);
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
-        try {
+        try 
+        {
             const res = await api.put(`/blog/comment/${id}`, { content });
             toast.success("🎉 Comment updated successfully!", {
                 position: "top-right",
                 autoClose: 3000,
             });
             navigate(`/blog/${res.data.comment.blogId}`);
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Update comment error:", err);
             toast.error("❌ Failed to update comment.", {
                 position: "top-right",

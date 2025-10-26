@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import { User, FileText, MessageCircle, Trash2, Eye } from "lucide-react";
 import "./All.css";
 
-function Admin() {
+function Admin() 
+{
     const [data, setData] = useState({
         users: [],
         blogs: [],
@@ -15,26 +16,34 @@ function Admin() {
     const [error, setError] = useState(null);
 
     const fetchAdminData = async () => {
-        try {
+
+        try 
+        {
             setLoading(true);
             const res = await api.get("/admin");
             setData(res.data);
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Error fetching admin dashboard:", err.response?.data || err.message);
             setError("Failed to load admin dashboard data.");
-        } finally {
+        } 
+        finally 
+        {
             setLoading(false);
         }
     };
 
     const deleteBlog = async (blogId) => {
+
         toast.info(
             <div>
                 <strong>Are you sure you want to delete this blog?</strong>
                 <div className="mt-2">
                     <button
                         onClick={async () => {
-                            try {
+                            try 
+                            {
                                 await api.delete(`/blog/${blogId}`);
                                 setData((prev) => ({
                                     ...prev,
@@ -46,7 +55,9 @@ function Admin() {
                                     position: "top-right",
                                     autoClose: 3000,
                                 });
-                            } catch (err) {
+                            } 
+                            catch(err) 
+                            {
                                 console.error(err);
                                 toast.dismiss();
                                 toast.error("❌ Failed to delete blog.", { autoClose: 3000 });
@@ -73,15 +84,17 @@ function Admin() {
         );
     };
 
-    // Delete Comment with toast confirmation
     const deleteComment = async (commentId) => {
+
         toast.info(
             <div>
                 <strong>Are you sure you want to delete this comment?</strong>
                 <div className="mt-2">
                     <button
                         onClick={async () => {
-                            try {
+
+                            try 
+                            {
                                 await api.delete(`/blog/comment/${commentId}`);
                                 setData((prev) => ({
                                     ...prev,
@@ -92,7 +105,9 @@ function Admin() {
                                     position: "top-right",
                                     autoClose: 3000,
                                 });
-                            } catch (err) {
+                            } 
+                            catch(err) 
+                            {
                                 console.error(err);
                                 toast.dismiss();
                                 toast.error("❌ Failed to delete comment.", { autoClose: 3000 });
@@ -123,7 +138,8 @@ function Admin() {
         fetchAdminData();
     }, []);
 
-    if (loading) {
+    if(loading) 
+    {
         return (
             <div className="admin-loading">
                 <p>Loading Admin Dashboard...</p>
@@ -131,7 +147,8 @@ function Admin() {
         );
     }
 
-    if (error) {
+    if(error) 
+    {
         return (
             <div className="admin-error">
                 <p>{error}</p>

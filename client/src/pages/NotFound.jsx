@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./All.css";
 
-function NotFound() {
+function NotFound() 
+{
     return (
         <div className="flex flex-col items-center justify-center text-center  text-white px-4">
 
@@ -25,10 +26,13 @@ function NotFound() {
                 Go Back Home
             </Link>
 
-            {/* <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* 
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-10 left-20 w-32 h-32 bg-red-600 opacity-30 rounded-full mix-blend-screen animate-bounce"></div>
                 <div className="absolute bottom-20 right-10 w-24 h-24 bg-blue-600 opacity-30 rounded-full mix-blend-screen animate-ping"></div>
-            </div> */}
+            </div> 
+            */}
+            
         </div>
     );
 }

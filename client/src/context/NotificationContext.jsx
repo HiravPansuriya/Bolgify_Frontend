@@ -4,43 +4,53 @@ import { fetchNotifications, markNotificationAsRead } from "../api/notificationA
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
+
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
 
-    // ✅ Keep user in sync when login/logout happens
     useEffect(() => {
+
         const handleStorageChange = () => {
             const updatedUser = JSON.parse(localStorage.getItem("user"));
             setUser(updatedUser);
         };
+
         window.addEventListener("storage", handleStorageChange);
         return () => window.removeEventListener("storage", handleStorageChange);
     }, []);
 
     const loadNotifications = async () => {
-        if (!user) return; // ✅ wait until user is available
-        try {
+
+        if (!user) return;
+
+        try
+        {
             const { data } = await fetchNotifications();
             const unread = data.notifications.filter(n => !n.isRead);
-            setNotifications(unread); // ✅ only show unread notifications
+            setNotifications(unread);
             setUnreadCount(unread.length);
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Failed to fetch notifications:", err);
         }
     };
 
     const markAsRead = async (id) => {
-        try {
+
+        try 
+        {
             await markNotificationAsRead(id);
             setNotifications(prev => prev.filter(n => n._id !== id)); // ✅ remove read ones
             setUnreadCount(prev => Math.max(prev - 1, 0));
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Failed to mark notification read:", err);
         }
     };
 
-    // ✅ Refetch when user logs in or page refreshes
     useEffect(() => {
         if (user) loadNotifications();
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,16 +1,19 @@
-export function generateAvatar(name, size = 128) {
-    if (!name || name.trim() === "") name = "User";
+export function generateAvatar(name, size = 128) 
+{
+    if(!name || name.trim() === "") name = "User";
 
     const words = name.trim().split(/\s+/);
     let initials = "";
 
-    if (words.length === 1) {
+    if(words.length === 1) 
+    {
         initials = words[0].substring(0, 1).toUpperCase();
-    } else {
+    } 
+    else 
+    {
         initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
     }
 
-    // Generate a consistent color from the name
     const hash = Array.from(name).reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const hue = hash % 360;
 
@@ -21,7 +24,7 @@ export function generateAvatar(name, size = 128) {
             font-family="Arial, sans-serif" font-size="${Math.floor(size * 0.44)}"
             fill="white" font-weight="600">${initials}</text>
     </svg>
-  `;
+    `;
 
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }

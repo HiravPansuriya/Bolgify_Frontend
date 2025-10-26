@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
-function EditBlog() {
+function EditBlog() 
+{
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -16,23 +17,33 @@ function EditBlog() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
         const fetchBlog = async () => {
-            try {
+
+            try 
+            {
                 const res = await api.get(`/blog/${id}`);
                 setTitle(res.data.blog.title);
                 setBody(res.data.blog.body);
                 setCurrentCover(res.data.blog.coverImageURL);
-            } catch (err) {
+            } 
+            catch(err) 
+            {
                 console.error("Error fetching blog:", err);
                 toast.error("❌ Failed to fetch blog.");
-            } finally {
+            } 
+            finally 
+            {
                 setLoading(false);
             }
         };
+
         fetchBlog();
+
     }, [id]);
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
         const formData = new FormData();
@@ -40,7 +51,8 @@ function EditBlog() {
         formData.append("body", body);
         if (coverImage) formData.append("coverImage", coverImage);
 
-        try {
+        try 
+        {
             const res = await api.put(`/blog/${id}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
@@ -50,7 +62,9 @@ function EditBlog() {
                 autoClose: 3000,
             });
             navigate(`/blog/${res.data.blog._id}`);
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Update blog error:", err);
             toast.error("❌ Failed to update blog.", {
                 position: "top-right",

@@ -6,7 +6,8 @@ import { generateAvatar } from "../utils/generateAvatar";
 import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
-function Blog({ user }) {
+function Blog({ user }) 
+{
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -23,19 +24,20 @@ function Blog({ user }) {
     const [saveLoading, setSaveLoading] = useState(false);
     const [savedByUser, setSavedByUser] = useState(false);
 
-    // Fetch blog and comments
     useEffect(() => {
+
         const fetchBlog = async () => {
-            try {
+
+            try 
+            {
                 const res = await api.get(`/blog/${id}`);
                 const blogData = res.data.blog;
 
-                // Determine if current user already liked the blog
-                const likedByUser =
-                    user && blogData.likes.some((uid) => uid.toString() === user._id.toString());
+                const likedByUser = user && blogData.likes.some((uid) => uid.toString() === user._id.toString());
 
                 let isSaved = false;
-                if (user) {
+                if(user) 
+                {
                     const savedRes = await api.get("/user/saved");
                     const savedBlogs = savedRes.data.savedBlogs || [];
                     isSaved = savedBlogs.some((b) => b._id === blogData._id);
@@ -49,62 +51,81 @@ function Blog({ user }) {
 
                 setSavedByUser(isSaved);
                 setComments(res.data.comments || []);
-            } catch (err) {
+            } 
+            catch(err) 
+            {
                 console.error(err);
                 toast.error("❌ Failed to load blog.", { position: "top-right", autoClose: 3000 });
-            } finally {
+            } 
+            finally 
+            {
                 setLoading(false);
             }
         };
         fetchBlog();
     }, [id, user]);
 
-    // Handle Like / Unlike
     const handleLike = async () => {
-        if (!user) {
+
+        if(!user) 
+        {
             toast.error("❌ You must be logged in to like a blog.", { position: "top-right", autoClose: 3000 });
             return;
         }
 
         setLikeLoading(true);
-        try {
+        try 
+        {
             const res = await api.post(`/blog/${id}/like`);
 
-            // Update local state just like EJS like.js
             setBlog((prev) => ({
                 ...prev,
                 likedByUser: res.data.liked,
                 likesCount: res.data.likesCount,
             }));
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error(err);
             toast.error("❌ Failed to like/unlike blog.", { position: "top-right", autoClose: 3000 });
-        } finally {
+        } 
+        finally 
+        {
             setLikeLoading(false);
         }
     };
 
-    // Fetch users who liked the blog (only blog owner can see)
     const handleViewLikes = async () => {
+
         setLikesLoading(true);
-        try {
+        try 
+        {
             const res = await api.get(`/blog/${id}/likes`);
             setLikedUsers(res.data.likes);
             setShowLikesModal(true);
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error(err);
-            if (err.response?.status === 403) {
+            if (err.response?.status === 403) 
+            {
                 toast.error("❌ You are not authorized to view this list.", { position: "top-right", autoClose: 3000 });
-            } else {
+            } 
+            else 
+            {
                 toast.error("❌ Failed to fetch likes.", { position: "top-right", autoClose: 3000 });
             }
-        } finally {
+        } 
+        finally 
+        {
             setLikesLoading(false);
         }
     };
 
     const handleSave = async () => {
-        if (!user) {
+
+        if(!user) 
+        {
             toast.error("❌ You must be logged in to save a blog.", {
                 position: "top-right",
                 autoClose: 3000,
@@ -113,45 +134,52 @@ function Blog({ user }) {
         }
 
         setSaveLoading(true);
-        try {
+        try 
+        {
             const res = await api.post(`/user/save/${id}`);
             const message = res.data.message;
 
-            if (message.includes("unsaved")) {
+            if(message.includes("unsaved")) 
+            {
                 setSavedByUser(false);
                 // toast.info("💾 Blog removed from saved list.", {
                 //     position: "top-right",
                 //     autoClose: 3000,
                 // });
-            } else {
+            } 
+            else 
+            {
                 setSavedByUser(true);
                 // toast.success("💾 Blog saved successfully!", {
                 //     position: "top-right",
                 //     autoClose: 3000,
                 // });
             }
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error(err);
             toast.error("❌ Failed to save blog.", {
                 position: "top-right",
                 autoClose: 3000,
             });
-        } finally {
+        } 
+        finally 
+        {
             setSaveLoading(false);
         }
     };
 
-
-    // Submit new comment
     const handleCommentSubmit = async (e) => {
+
         e.preventDefault();
         if (!commentContent.trim()) return;
 
-        try {
+        try 
+        {
             const res = await api.post(`/blog/comment/${id}`, { content: commentContent });
             const newCommentFromServer = res.data.comment;
 
-            // Merge logged-in user info to ensure frontend shows it
             const newComment = {
                 ...newCommentFromServer,
                 createdBy: {
@@ -160,32 +188,38 @@ function Blog({ user }) {
                     profileImageURL: user.profileImageURL || "/images/default.png",
                 },
             };
+
             setComments((prev) => [...prev, newComment]);
             setCommentContent("");
             toast.success("🎉 Comment posted!", { position: "top-right", autoClose: 3000 });
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error(err);
             toast.error("❌ Failed to post comment.", { position: "top-right", autoClose: 3000 });
         }
     };
 
-    // Delete blog
     const handleDeleteBlog = async () => {
+
         toast.info(
             <div>
                 <p>Are you sure you want to delete this blog?</p>
                 <div className="mt-2">
                     <button
                         onClick={async () => {
-                            try {
+                            try 
+                            {
                                 await api.delete(`/blog/${id}`);
-                                toast.dismiss(); // close confirmation toast
+                                toast.dismiss();
                                 toast.success("🗑 Blog deleted successfully!", {
                                     position: "top-right",
                                     autoClose: 3000,
                                 });
                                 navigate("/");
-                            } catch (err) {
+                            } 
+                            catch(err) 
+                            {
                                 console.error(err);
                                 toast.error("❌ Failed to delete blog.", {
                                     position: "top-right",
@@ -214,7 +248,6 @@ function Blog({ user }) {
         );
     };
 
-    // Delete comment
     const handleDeleteComment = async (commentId) => {
 
         toast.info(
@@ -223,15 +256,18 @@ function Blog({ user }) {
                 <div className="mt-2">
                     <button
                         onClick={async () => {
-                            try {
+                            try 
+                            {
                                 await api.delete(`/blog/comment/${commentId}`);
                                 setComments((prev) => prev.filter((c) => c._id !== commentId));
-                                toast.dismiss(); // close confirmation toast
+                                toast.dismiss();
                                 toast.success("🗑 Comment deleted successfully!", {
                                     position: "top-right",
                                     autoClose: 3000,
                                 });
-                            } catch (err) {
+                            } 
+                            catch(err) 
+                            {
                                 console.error(err);
                                 toast.error("❌ Failed to delete comment.", {
                                     position: "top-right",
@@ -257,7 +293,6 @@ function Blog({ user }) {
         );
     };
 
-    // Loading states
     if (loading) return <div className="blog-loading">Loading...</div>;
     if (!blog) return <div className="blog-error">Blog not found.</div>;
 

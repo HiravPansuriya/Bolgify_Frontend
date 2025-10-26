@@ -3,7 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./All.css";
 
-function Search() {
+function Search() 
+{
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const query = params.get("query") || "";
@@ -16,16 +17,23 @@ function Search() {
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
+
         const fetchSearchResults = async () => {
-            try {
+
+            try 
+            {
                 setLoading(true);
                 const res = await api.get(`/blog/search?query=${query}&page=${currentPage}`);
                 setBlogs(res.data.blogs || []);
                 setTotalPages(res.data.totalPages || 1);
-            } catch (err) {
+            } 
+            catch(err) 
+            {
                 console.error("Error fetching search results:", err.response?.data || err.message);
                 setError("Failed to load search results. Please try again later.");
-            } finally {
+            } 
+            finally 
+            {
                 setLoading(false);
             }
         };
@@ -33,9 +41,11 @@ function Search() {
         if (query) {
             fetchSearchResults();
         }
+
     }, [query, currentPage]);
 
-    if (loading) {
+    if(loading) 
+    {
         return (
             <div className="loading-container">
                 <p>Loading search results...</p>
@@ -43,7 +53,8 @@ function Search() {
         );
     }
 
-    if (error) {
+    if(error) 
+    {
         return (
             <div className="error-container">
                 <p className="error-text">{error}</p>

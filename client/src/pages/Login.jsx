@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./All.css";
 
 const Login = ({ setUser }) => {
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -21,17 +22,21 @@ const Login = ({ setUser }) => {
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         setLoading(true);
 
-        try {
+        try 
+        {
             const res = await api.post("/user/login", formData);
 
-            if (res.data.token) {
+            if(res.data.token) 
+            {
                 localStorage.setItem("token", res.data.token);
             }
 
-            if (res.data.user) {
+            if(res.data.user) 
+            {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
                 setUser(res.data.user);
             }
@@ -42,19 +47,25 @@ const Login = ({ setUser }) => {
             });
 
             navigate("/");
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Login Error:", err.response?.data || err.message);
             toast.error(err.response?.data?.error || "Login failed! Please try again.", {
                 position: "top-right",
                 autoClose: 3000,
             });
-        } finally {
+        } 
+        finally 
+        {
             setLoading(false);
         }
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
-        try {
+
+        try 
+        {
             const decoded = jwtDecode(credentialResponse.credential); 
             const { name, email, picture } = decoded;
 
@@ -74,7 +85,9 @@ const Login = ({ setUser }) => {
             });
 
             navigate("/");
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Google Login Error:", err.response?.data || err.message);
             toast.error("Google Login failed! Please try again.", {
                 position: "top-right",

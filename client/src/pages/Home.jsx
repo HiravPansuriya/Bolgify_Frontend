@@ -3,29 +3,36 @@ import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./All.css";
 
-function Home({ user }) {
+function Home({ user }) 
+{
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const revealRefs = useRef([]); // Store references to each section
+    const revealRefs = useRef([]);
 
-    // Fetch blogs when logged in
     useEffect(() => {
 
-        if (!user) {
+        if(!user) 
+        {
             setLoading(false);
             setBlogs([]);
             return;
         }
 
         const fetchBlogs = async () => {
-            try {
+
+            try 
+            {
                 const res = await api.get("/blog");
                 setBlogs(res.data.blogs || []);
-            } catch (err) {
+            } 
+            catch(err) 
+            {
                 console.error("Error fetching blogs:", err.response?.data || err.message);
                 setError("Failed to load blogs. Please try again later.");
-            } finally {
+            } 
+            finally 
+            {
                 setLoading(false);
             }
         };
@@ -33,19 +40,21 @@ function Home({ user }) {
         fetchBlogs();
     }, [user]);
 
-    // Intersection Observer for reveal animations
     useEffect(() => {
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
+
+                    if(entry.isIntersecting) 
+                    {
                         entry.target.classList.add("show");
-                        observer.unobserve(entry.target); // Animate only once
+                        observer.unobserve(entry.target);
                     }
                 });
             },
             {
-                threshold: 0.2, // Trigger when 20% of section is visible
+                threshold: 0.2,
             }
         );
 
@@ -58,15 +67,15 @@ function Home({ user }) {
         };
     }, [user, loading]);
 
-    // Helper to attach refs dynamically
     const addToRefs = (el) => {
-        if (el && !revealRefs.current.includes(el)) {
+        if(el && !revealRefs.current.includes(el)) 
+        {
             revealRefs.current.push(el);
         }
     };
 
-    // Landing page when user is NOT logged in
-    if (!user) {
+    if(!user) 
+    {
         return (
             <div className="home-wrapper">
                 <div className="home-content">
@@ -164,8 +173,8 @@ function Home({ user }) {
         );
     }
 
-    // If user is logged in and blogs are loading
-    if (loading) {
+    if(loading) 
+    {
         return (
             <div className="loading-container">
                 <p>Loading blogs...</p>
@@ -173,7 +182,8 @@ function Home({ user }) {
         );
     }
 
-    if (error) {
+    if(error) 
+    {
         return (
             <div className="error-container">
                 <p className="error-text">{error}</p>
@@ -181,7 +191,8 @@ function Home({ user }) {
         );
     }
 
-    if (blogs.length === 0) {
+    if(blogs.length === 0) 
+    {
         return (
             <div className="container text-center py-5">
                 <p className="no-blogs">No blogs available. Start by creating one!</p>
@@ -192,7 +203,6 @@ function Home({ user }) {
         );
     }
 
-    // If user is logged in and blogs are available
     return (
         <div className="container py-5">
             <div className="row g-4">

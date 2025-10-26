@@ -19,14 +19,15 @@ const Navbar = ({ user, setUser }) => {
     const handleSearch = (e) => {
         e.preventDefault();
 
-        if (searchTerm.trim()) {
-            // Navigate to search page with query in URL
+        if(searchTerm.trim()) 
+        {
             navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
         }
     };
 
     const handleLogout = async () => {
-        try {
+        try 
+        {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             setUser(null);
@@ -40,7 +41,8 @@ const Navbar = ({ user, setUser }) => {
                 console.error("Backend logout failed:", err.response?.data || err.message);
             });
         }
-        catch (err) {
+        catch(err) 
+        {
             console.error("Logout failed:", err.response?.data || err.message);
             toast.error("❌ Logout failed! Please try again.", {
                 position: "top-right",
@@ -51,7 +53,7 @@ const Navbar = ({ user, setUser }) => {
 
     const handleMarkAsRead = async (id) => {
         await markAsRead(id);
-        setNotifications(prev => prev.filter(n => n._id !== id)); // instantly remove from UI
+        setNotifications(prev => prev.filter(n => n._id !== id));
     };
 
     return (

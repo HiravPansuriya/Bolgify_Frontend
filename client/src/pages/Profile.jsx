@@ -6,7 +6,8 @@ import { generateAvatar } from "../utils/generateAvatar";
 import api from "../api/axiosConfig";
 import "./All.css";
 
-function Profile({ setUser }) {
+function Profile({ setUser }) 
+{
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -22,8 +23,11 @@ function Profile({ setUser }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
+
         const fetchProfileData = async () => {
-            try {
+
+            try 
+            {
                 const res = await api.get(`/user/profile/${id}`);
                 const { user, blogs, likedBlogs, savedBlogs } = res.data;
 
@@ -32,11 +36,15 @@ function Profile({ setUser }) {
                 setBlogs(blogs || []);
                 setLikedBlogs(likedBlogs || []);
                 setSavedBlogs(savedBlogs || []);
-            } catch (err) {
+            } 
+            catch(err) 
+            {
                 console.error("Error fetching profile:", err);
                 toast.error("❌ Failed to load profile.", { position: "top-right", autoClose: 3000 });
                 setError("Failed to load profile.");
-            } finally {
+            } 
+            finally 
+            {
                 setLoading(false);
             }
         };
@@ -44,8 +52,8 @@ function Profile({ setUser }) {
         fetchProfileData();
     }, [id]);
 
-    // ✅ Handle profile update
     const handleUpdateProfile = async (e) => {
+
         e.preventDefault();
 
         const formData = new FormData();
@@ -53,7 +61,8 @@ function Profile({ setUser }) {
         if (password) formData.append("password", password);
         if (profileImage) formData.append("profileImage", profileImage);
 
-        try {
+        try 
+        {
             await api.put(`/user/profile/${id}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
@@ -61,7 +70,6 @@ function Profile({ setUser }) {
             const response = await api.get(`/user/profile/${id}`);
             const updatedUser = response.data.user;
 
-            // Update state and localStorage
             setUser(updatedUser);
             setProfileUser(updatedUser);
             localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -70,7 +78,9 @@ function Profile({ setUser }) {
                 position: "top-right",
                 autoClose: 3000,
             });
-        } catch (err) {
+        } 
+        catch(err) 
+        {
             console.error("Update profile error:", err);
             toast.error("❌ Failed to update profile. Please try again.", {
                 position: "top-right",
@@ -79,21 +89,21 @@ function Profile({ setUser }) {
         }
     };
 
-    // ✅ Handle remove profile image
     const handleRemoveImage = async () => {
+
         toast.info(
             <div>
                 <strong>Remove Profile Image?</strong>
                 <div className="mt-2">
                     <button
                         onClick={async () => {
-                            try {
+                            try 
+                            {
                                 await api.put(`/user/profile/${id}`, { removeImage: "true" });
 
                                 const response = await api.get(`/user/profile/${id}`);
                                 const updatedUser = response.data.user;
 
-                                // Update React state and localStorage
                                 setUser(updatedUser);
                                 setProfileUser(updatedUser);
                                 localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -104,7 +114,9 @@ function Profile({ setUser }) {
                                     autoClose: 3000,
                                 });
                                 window.location.reload();
-                            } catch (err) {
+                            } 
+                            catch(err) 
+                            {
                                 console.error("Remove image error:", err);
                                 toast.dismiss();
                                 toast.error("❌ Failed to remove profile image.", {
@@ -134,8 +146,8 @@ function Profile({ setUser }) {
         );
     };
 
-    // ✅ Handle account deletion
     const handleDeleteAccount = async () => {
+
         toast.warn(
             <div>
                 <strong>⚠️ Delete Account?</strong>
@@ -143,10 +155,10 @@ function Profile({ setUser }) {
                 <div className="mt-2">
                     <button
                         onClick={async () => {
-                            try {
+                            try 
+                            {
                                 await api.delete(`/user/profile/${id}`);
 
-                                // Clear user state and localStorage
                                 setUser(null);
                                 localStorage.removeItem("user");
                                 localStorage.removeItem("token");
@@ -158,7 +170,9 @@ function Profile({ setUser }) {
                                 });
 
                                 navigate("/");
-                            } catch (err) {
+                            } 
+                            catch(err) 
+                            {
                                 console.error("Delete account error:", err);
                                 toast.dismiss();
                                 toast.error("❌ Failed to delete account.", {
@@ -188,7 +202,8 @@ function Profile({ setUser }) {
         );
     };
 
-    if (loading) {
+    if(loading) 
+    {
         return (
             <div className="profile-loading">
                 <p>Loading profile...</p>
@@ -196,7 +211,8 @@ function Profile({ setUser }) {
         );
     }
 
-    if (error) {
+    if(error) 
+    {
         return (
             <div className="profile-error">
                 <p>{error}</p>
